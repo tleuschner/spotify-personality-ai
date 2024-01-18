@@ -16,19 +16,31 @@
   }
 }
 
+main {
+  width: 800px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 body {
   padding: 1rem;
-  background: #dce35b; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #45b649,
-    #dce35b
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #45b649,
-    #dce35b
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, #45b649, #dce35b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: "Arial", sans-serif;
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    padding: 0.5rem;
+  }
+  main {
+    padding: 1rem;
+  }
 }
 
 .spotify-login-button {
