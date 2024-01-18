@@ -1,24 +1,31 @@
 "use client";
 
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const LoggedInStatus: React.FC = () => {
   const session = useSession();
-  const [topSongs, setTopSongs] = useState([]);
-  console.log({ session });
+  const router = useRouter();
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      fetch("/api/spotify", {
-        headers: { token: session.data.accessToken },
-      }).then((res) => {
-        if (res.ok) {
-          res.json().then((json) => setTopSongs(json.topSongs));
-        }
-      });
+      router.push("/personality");
     }
   }, [session.status]);
+  // console.log({ session });
+
+  // useEffect(() => {
+  //   if (session.status === "authenticated") {
+  //     fetch("/api/spotify", {
+  //       headers: { token: session.data.accessToken },
+  //     }).then((res) => {
+  //       if (res.ok) {
+  //         res.json().then((json) => setTopSongs(json.topSongs));
+  //       }
+  //     });
+  //   }
+  // }, [session.status]);
 
   return (
     <>
@@ -27,26 +34,20 @@ const LoggedInStatus: React.FC = () => {
       ) : (
         <h1>Ausgeloggt</h1>
       )}
-
-      {topSongs?.map((song) => (
-        <div>{song}</div>
-      ))}
     </>
   );
 };
 
 export default function Home() {
   return (
-    <SessionProvider>
-      <main className="">
-        <LoggedInStatus />
-        <button type="button" onClick={() => signIn("spotify")}>
-          Mit Spotify einloggen
-        </button>
-        <button type="button" onClick={() => signOut()}>
-          Ausloggen
-        </button>
-      </main>
-    </SessionProvider>
+    <main className="">
+      <LoggedInStatus />
+      <button type="button" onClick={() => signIn("spotify")}>
+        Mit Spotify einloggen
+      </button>
+      <button type="button" onClick={() => signOut()}>
+        Ausloggen
+      </button>
+    </main>
   );
 }
