@@ -1,8 +1,8 @@
 "use client";
 
-import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const LoggedInStatus: React.FC = () => {
   const session = useSession();
@@ -13,19 +13,6 @@ const LoggedInStatus: React.FC = () => {
       router.push("/personality");
     }
   }, [session.status]);
-  // console.log({ session });
-
-  // useEffect(() => {
-  //   if (session.status === "authenticated") {
-  //     fetch("/api/spotify", {
-  //       headers: { token: session.data.accessToken },
-  //     }).then((res) => {
-  //       if (res.ok) {
-  //         res.json().then((json) => setTopSongs(json.topSongs));
-  //       }
-  //     });
-  //   }
-  // }, [session.status]);
 
   return (
     <>
@@ -42,7 +29,11 @@ export default function Home() {
   return (
     <main className="">
       <LoggedInStatus />
-      <button type="button" onClick={() => signIn("spotify")}>
+      <button
+        type="button"
+        className="spotify-login-button text-black pt-2 pb-2 pl-4 pr-4 rounded-full"
+        onClick={() => signIn("spotify")}
+      >
         Mit Spotify einloggen
       </button>
       <button type="button" onClick={() => signOut()}>

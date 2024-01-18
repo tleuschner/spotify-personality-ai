@@ -13,13 +13,16 @@ export async function GET(req: NextApiRequest) {
   const accessToken = headersList.get("token")!;
   const spotifyApi = new SpotifyWebApi({ accessToken });
 
-  const topSongsResponse = await spotifyApi.getMyTopTracks({ limit: 50 });
+  const topSongsResponse = await spotifyApi.getMyTopTracks({
+    limit: 50,
+    time_range: "long_term",
+  });
   const topSongs = topSongsResponse.body.items.map((track) => track.name);
   const chatCompletion = await openai.chat.completions.create({
     messages: [
       {
         role: "user",
-        content: `Beschreibe die Persönlichkeit der Person, welche folgende Songs am meisten in den letzen drei Monaten gehört hat. Gib nur 3 Stichpunkte mit bindestrich anstatt zahl mit mindestens 40 wörtern und sonst nichts. Verwende in der weiteren Antwort keine Bindestriche. Verhalte dich so, als würdest du direkt mit der Person sprechen und duze sie.
+        content: `Beschreibe die Persönlichkeit der Person, welche folgende Songs am meisten in den letzen drei Monaten gehört hat. Gib nur 3 Stichpunkte getrennt mit bindestrichem anstatt mit Zahlen mit mindestens 20 wörtern und maximal 30 wörtern und sonst nichts. Verwende in der weiteren Antwort keine Bindestriche. Verhalte dich so, als würdest du direkt mit der Person sprechen und duze sie.
     
     ${topSongs.join(",")}`,
       },

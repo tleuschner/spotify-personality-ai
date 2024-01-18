@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
 import Provider from "./context/client-provider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
-const montserrat = Montserrat({ subsets: ["latin"] });
+const roboto = Roboto({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +20,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
   return (
     <html lang="de">
-      <body className={montserrat.className}>
+      <body className={roboto.className}>
         <Provider session={session}>{children}</Provider>
       </body>
     </html>

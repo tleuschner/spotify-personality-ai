@@ -1,0 +1,16 @@
+ul.dashed {
+  list-style-type: none;
+  margin: 0;
+}
+ul.dashed > li {
+  text-indent: -5px;
+}
+ul.dashed > li:before {
+  content: "-";
+  text-indent: -5px;
+}
+
+.typewriter-headline {
+  font-weight: 700;
+  font-size: 4rem;
+}
