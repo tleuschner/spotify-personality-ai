@@ -17,8 +17,9 @@
 }
 
 body {
-  padding: 1rem;
   background: #dce35b; /* fallback for old browsers */
+  padding: 1rem;
+
   background: -webkit-linear-gradient(
     to right,
     #45b649,
