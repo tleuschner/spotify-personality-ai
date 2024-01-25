@@ -12,7 +12,7 @@ const LoggedInStatus: React.FC = () => {
     if (session.status === "authenticated") {
       router.push("/personality");
     }
-  }, [session.status]);
+  }, [session.status, router]);
 
   return <></>;
 };

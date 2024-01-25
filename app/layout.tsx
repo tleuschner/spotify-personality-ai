@@ -3,7 +3,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import Provider from "./context/client-provider";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "./authOptions";
 
 const roboto = Roboto({ weight: "400", subsets: ["latin"] });
 

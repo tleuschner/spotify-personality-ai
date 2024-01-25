@@ -1,5 +1,4 @@
 import rateLimit from "@/app/utils/rateLitmit";
-import { NextApiRequest } from "next";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
@@ -14,7 +13,7 @@ const limiter = rateLimit({
   uniqueTokenPerInterval: 500, // Max 500 users per second
 });
 
-export async function GET(req: NextApiRequest) {
+export async function GET() {
   try {
     const headersList = headers();
     const accessToken = headersList.get("token")!;

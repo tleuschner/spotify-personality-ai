@@ -10,6 +10,7 @@ export default function About() {
   const [userPersonality, setUserPersonality] = useState([""]);
 
   useEffect(() => {
+    //@ts-ignore
     if (session?.error === "RefreshAccessTokenError") {
       signIn("spotify");
     }
@@ -17,6 +18,7 @@ export default function About() {
     if (session.status === "authenticated") {
       fetch("/api/spotify", {
         headers: {
+          //@ts-ignore
           token: session.data.accessToken,
           user: session.data.user?.name || session.data.user?.email || "anon",
         },
