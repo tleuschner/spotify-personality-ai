@@ -14,15 +14,7 @@ const LoggedInStatus: React.FC = () => {
     }
   }, [session.status]);
 
-  return (
-    <>
-      {session.status === "authenticated" ? (
-        <h1>Logged in</h1>
-      ) : (
-        <h1>Ausgeloggt</h1>
-      )}
-    </>
-  );
+  return <></>;
 };
 
 export default function Home() {

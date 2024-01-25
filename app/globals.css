@@ -29,7 +29,6 @@ body {
   background: linear-gradient(to right, #45b649, #dce35b);
   display: flex;
   justify-content: center;
-  align-items: center;
   min-height: 100vh;
   font-family: "Arial", sans-serif;
 }

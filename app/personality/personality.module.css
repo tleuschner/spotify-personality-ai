@@ -1,5 +1,5 @@
 ul.dashed {
-  list-style-type: none;
+  list-style: inside;
   margin: 0;
 }
 ul.dashed > li {
