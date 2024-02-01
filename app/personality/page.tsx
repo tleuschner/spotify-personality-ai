@@ -8,6 +8,7 @@ export default function About() {
   const session = useSession();
   const [showPersonality, setShowPersonality] = useState(false);
   const [userPersonality, setUserPersonality] = useState([""]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     //@ts-ignore
@@ -23,8 +24,16 @@ export default function About() {
           user: session.data.user?.name || session.data.user?.email || "anon",
         },
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            setError("Da lief wohl etwas Schief");
+            return "";
+          }
+          return res.json();
+        })
         .then((json) => {
+          if (!json) return;
+
           const { personality } = json;
           setUserPersonality(personality.split("-").filter(Boolean));
         });
@@ -49,6 +58,7 @@ export default function About() {
         />
       </h1>
 
+      {error && error}
       {showPersonality && (
         <ul className="dashed">
           {userPersonality.map((trait) => (
