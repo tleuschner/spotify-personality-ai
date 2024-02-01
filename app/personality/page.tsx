@@ -2,12 +2,13 @@
 import { signOut, useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Typewriter from "typewriter-effect";
-import "./personality.module.css";
+import css from "./personality.module.css";
 
 export default function About() {
   const session = useSession();
   const [showPersonality, setShowPersonality] = useState(false);
   const [userPersonality, setUserPersonality] = useState([""]);
+  const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -17,6 +18,7 @@ export default function About() {
     }
 
     if (session.status === "authenticated") {
+      setIsFetching(true);
       fetch("/api/spotify", {
         headers: {
           //@ts-ignore
@@ -25,6 +27,7 @@ export default function About() {
         },
       })
         .then((res) => {
+          setIsFetching(false);
           if (!res.ok) {
             setError("Da lief wohl etwas Schief");
             return "";
@@ -58,16 +61,20 @@ export default function About() {
         />
       </h1>
 
-      {error && error}
-      {showPersonality && (
-        <ul className="dashed">
+      {/* {error && error} */}
+      {showPersonality && userPersonality.length > 1 && (
+        <ul className={css.dashed}>
           {userPersonality.map((trait) => (
-            <li key={trait}>&bull; {trait}</li>
+            <li key={trait}>{trait.replace("-", "")}</li>
           ))}
         </ul>
       )}
+
+      {isFetching && showPersonality && <div className={css.loader}></div>}
+      <br />
       <button
         type="button"
+        className="mt-4"
         onClick={() =>
           signOut({
             callbackUrl: window.location.origin,
