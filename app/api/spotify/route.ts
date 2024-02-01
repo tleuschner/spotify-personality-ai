@@ -30,9 +30,9 @@ export async function GET() {
     messages: [
       {
         role: "user",
-        content: `Beschreibe die Persönlichkeit der Person, welche folgende Songs am meisten in den letzen drei Monaten gehört hat. Gib nur 3 Stichpunkte getrennt mit bindestrichem anstatt mit Zahlen mit mindestens 20 wörtern und maximal 30 wörtern und sonst nichts. Verwende in der weiteren Antwort keine Bindestriche. Verhalte dich so, als würdest du direkt mit der Person sprechen und duze sie.
+        content: `Beschreibe die Persönlichkeit der Person, welche folgende Songs am meisten in den letzen drei Monaten gehört hat. Verhalte dich so, als würdest du direkt mit der Person sprechen und duze sie.
   
-          Die Antwort hat dabei folgende Strutkur. Ersetze die [] mit deiner Persönlichkeitsvorhersage
+          Die Antwort hat dabei folgende Strutkur. Ersetze die [maximal 40. Wörter] mit deiner Persönlichkeitsvorhersage
   
           - [maximal 40. Wörter]
           - [maximal 40. Wörter]
@@ -41,7 +41,7 @@ export async function GET() {
       ${topSongs.join(",")}`,
       },
     ],
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
   });
 
   const response = NextResponse.json({

@@ -5,7 +5,6 @@ import SpotifyProvider from "next-auth/providers/spotify";
 async function refreshAccessToken(token: JWT) {
   try {
     const url = "https://accounts.spotify.com/api/token";
-
     const payload = {
       method: "POST",
       headers: {
