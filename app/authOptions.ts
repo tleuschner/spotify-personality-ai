@@ -32,7 +32,6 @@ async function refreshAccessToken(token: JWT) {
     };
   } catch (error) {
     console.log(error);
-
     return {
       ...token,
       error: "RefreshAccessTokenError",
@@ -55,7 +54,7 @@ export const authOptions: AuthOptions = {
       if (account && user) {
         return {
           accessToken: account.access_token,
-          accessTokenExpires: account?.expires_at || 0 * 1000,
+          accessTokenExpires: (account?.expires_at || 0) * 1000,
           refreshToken: account.refresh_token,
           user,
         };
@@ -66,13 +65,15 @@ export const authOptions: AuthOptions = {
       }
 
       // Access token has expired, try to update it
-      return refreshAccessToken(token);
+      return await refreshAccessToken(token);
     },
     async session({ session, token }) {
       if (token) {
         session.user = token.user as any;
         //@ts-ignore
         session.accessToken = token.accessToken as string;
+        //@ts-ignore
+        session.accessTokenExpires = token.accessTokenExpires;
         //@ts-ignore
         session.error = token.error;
       }

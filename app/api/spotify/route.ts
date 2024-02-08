@@ -1,11 +1,12 @@
+import { TimeRange } from "@/app/types";
 import rateLimit from "@/app/utils/rateLitmit";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import SpotifyWebApi from "spotify-web-api-node";
 
 const openai = new OpenAI({
-  apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
+  apiKey: process.env["OPENAI_API_KEY"],
 });
 
 const limiter = rateLimit({
@@ -13,8 +14,10 @@ const limiter = rateLimit({
   uniqueTokenPerInterval: 500, // Max 500 users per second
 });
 
-export async function GET() {
-  // try {
+export async function GET(req: NextRequest) {
+  const params = req.nextUrl.searchParams;
+  const timeRange: TimeRange =
+    (params.get("timeRange") as TimeRange) ?? "long_term";
   const headersList = headers();
   const accessToken = headersList.get("token")!;
   const userId = headersList.get("user")!;
@@ -23,16 +26,16 @@ export async function GET() {
   const _headers = (await limiter.check(5, userId)) as any;
   const topSongsResponse = await spotifyApi.getMyTopTracks({
     limit: 50,
-    time_range: "long_term",
+    time_range: timeRange,
   });
   const topSongs = topSongsResponse.body.items.map((track) => track.name);
   const chatCompletion = await openai.chat.completions.create({
     messages: [
       {
         role: "user",
-        content: `Beschreibe die Persönlichkeit der Person, welche folgende Songs am meisten in den letzen drei Monaten gehört hat. Verhalte dich so, als würdest du direkt mit der Person sprechen und duze sie.
+        content: `Beschreibe die Persönlichkeit der Person, welche folgende Songs am meisten gehört hat. Verhalte dich so, als würdest du direkt mit der Person sprechen und duze sie.
   
-          Die Antwort hat dabei folgende Strutkur. Ersetze die [maximal 40. Wörter] mit deiner Persönlichkeitsvorhersage
+          Die Antwort hat dabei folgende Strutkur. Ersetze die [maximal 40. Wörter] mit deiner Persönlichkeitsvorhersage. Verwende keine Bindestriche (-) in deiner Antwort außer für die Struktur
   
           - [maximal 40. Wörter]
           - [maximal 40. Wörter]
@@ -54,11 +57,4 @@ export async function GET() {
   });
 
   return response;
-  // } catch (e) {
-  //   console.log(e);
-  //   return NextResponse.json(
-  //     { message: `Something went wrong ${JSON.stringify(e)}` },
-  //     { status: 500 }
-  //   );
-  // }
 }
