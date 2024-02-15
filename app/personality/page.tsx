@@ -14,9 +14,14 @@ const timeFrameOptions = [
 ];
 
 export default function About() {
-  const session = useSession();
-  const [showPersonality, setShowPersonality] = useState(false);
-  const [userPersonality, setUserPersonality] = useState([""]);
+  const session = useSession({
+    required: true,
+    onUnauthenticated: () => signIn("spotify"),
+  });
+  const [typeWriterDone, setTypeWriterDone] = useState(false);
+  const [hasFetchedUserPersonality, setHasFetchedUserPersonality] =
+    useState(false);
+  const [userPersonality, setUserPersonality] = useState<string[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState("");
   const [timeRange, setTimeRange] = useState<TimeRange>("long_term");
@@ -41,6 +46,7 @@ export default function About() {
           setIsFetching(false);
           if (!res.ok) {
             setError("Da lief wohl etwas Schief");
+            setHasFetchedUserPersonality(false);
             return "";
           }
           return res.json();
@@ -49,14 +55,14 @@ export default function About() {
           if (!json) return;
           const { personality } = json;
           setUserPersonality(personality.split("-").filter(Boolean));
+          setHasFetchedUserPersonality(true);
         });
     }
   }, [session, timeRange]);
 
   // TODO playlistenoptimierung (siehe chat in stream)
-  // TODO warum userPersonality.length > 1; und was sagt das aus?
-  const showTraitsList = showPersonality && userPersonality.length > 1;
-  const showLoadingSpinner = isFetching && showPersonality;
+  const showTraitsList = typeWriterDone && hasFetchedUserPersonality;
+  const showLoadingSpinner = typeWriterDone && isFetching;
   return (
     <main className="flex flex-col dark text-foreground bg-background">
       <Select
@@ -81,7 +87,7 @@ export default function About() {
               )
               .start()
               .callFunction(() => {
-                setShowPersonality(true);
+                setTypeWriterDone(true);
               });
           }}
         />
