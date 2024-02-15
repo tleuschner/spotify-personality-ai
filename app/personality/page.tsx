@@ -27,7 +27,6 @@ export default function About() {
   const [timeRange, setTimeRange] = useState<TimeRange>("long_term");
 
   useEffect(() => {
-    console.log(session);
     //@ts-ignore
     if (session?.data?.error === "RefreshAccessTokenError") {
       signIn("spotify");
