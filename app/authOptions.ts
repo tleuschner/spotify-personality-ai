@@ -2,6 +2,8 @@ import { AuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import SpotifyProvider from "next-auth/providers/spotify";
 
+const OFFSET_ACCESS_EXPIRES = 1000 * 60 * 5;
+
 async function refreshAccessToken(token: JWT) {
   try {
     const url = "https://accounts.spotify.com/api/token";
@@ -9,11 +11,14 @@ async function refreshAccessToken(token: JWT) {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${btoa(
+          `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+        )}`,
       },
       body: new URLSearchParams({
         grant_type: "refresh_token",
-        refresh_token: token.refresh_token as string,
-        client_id: process.env.SPOTIFY_CLIENT_ID as string,
+        refresh_token: token.refreshToken as string,
+        // client_id: process.env.SPOTIFY_CLIENT_ID as string,
       }),
     };
     const response = await fetch(url, payload);
@@ -60,7 +65,10 @@ export const authOptions: AuthOptions = {
         };
       }
       // Return previous token if the access token has not expired yet
-      if (Date.now() < (token.accessTokenExpires as number) * 1000) {
+      if (
+        Date.now() <
+        (token.accessTokenExpires as number) - OFFSET_ACCESS_EXPIRES
+      ) {
         return token;
       }
 

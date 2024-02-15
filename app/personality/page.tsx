@@ -24,7 +24,7 @@ export default function About() {
   useEffect(() => {
     console.log(session);
     //@ts-ignore
-    if (session?.data.error === "RefreshAccessTokenError") {
+    if (session?.data?.error === "RefreshAccessTokenError") {
       signIn("spotify");
     }
     if (session.status === "authenticated") {
