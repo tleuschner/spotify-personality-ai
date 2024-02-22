@@ -59,9 +59,10 @@ export default function About() {
   return (
     <main className="flex flex-col dark text-foreground bg-background">
       <Select
+        size="sm"
         label="Zeitraum"
         defaultSelectedKeys={[timeFrameOptions[0].value]}
-        className="w-52"
+        className="w-52 self-end pb-2"
         onChange={(e) => setTimeRange(e.target.value as TimeRange)}
       >
         {timeFrameOptions.map((timeFrameOption) => (

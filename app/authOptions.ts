@@ -19,7 +19,6 @@ async function refreshAccessToken(token: JWT) {
       body: new URLSearchParams({
         grant_type: "refresh_token",
         refresh_token: token.refreshToken as string,
-        // client_id: process.env.SPOTIFY_CLIENT_ID as string,
       }),
     };
     const response = await fetch(url, payload);
@@ -67,7 +66,7 @@ export const authOptions: AuthOptions = {
       }
       // Return previous token if the access token has not expired yet
       if (
-        Date.now() <
+        Date.now() >
         (token.accessTokenExpires as number) - OFFSET_ACCESS_EXPIRES
       ) {
         return token;

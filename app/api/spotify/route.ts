@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
       ${topSongs.join(",")}`,
       },
     ],
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
   });
 
   const response = NextResponse.json({
