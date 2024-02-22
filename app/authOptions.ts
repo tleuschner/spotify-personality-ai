@@ -1,6 +1,7 @@
 import { AuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import SpotifyProvider from "next-auth/providers/spotify";
+import { RefreshTokenError } from "./types/types";
 
 const OFFSET_ACCESS_EXPIRES = 1000 * 60 * 5;
 
@@ -78,12 +79,9 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user = token.user as any;
-        //@ts-ignore
         session.accessToken = token.accessToken as string;
-        //@ts-ignore
-        session.accessTokenExpires = token.accessTokenExpires;
-        //@ts-ignore
-        session.error = token.error;
+        session.accessTokenExpires = token.accessTokenExpires as number;
+        session.error = token.error as RefreshTokenError;
       }
 
       return session;

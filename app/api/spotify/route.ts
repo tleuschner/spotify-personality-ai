@@ -1,6 +1,6 @@
-import { TimeRange } from "@/app/types";
+import { SeelenblickToken, TimeRange } from "@/app/types/types";
 import rateLimit from "@/app/utils/rateLitmit";
-import { headers } from "next/headers";
+import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import SpotifyWebApi from "spotify-web-api-node";
@@ -15,12 +15,15 @@ const limiter = rateLimit({
 });
 
 export async function GET(req: NextRequest) {
+  const token = (await getToken({ req })) as SeelenblickToken | null;
+  if (!token || !token.accessToken) {
+    return NextResponse.error();
+  }
+  const accessToken = token.accessToken as string;
+  const userId = token.user?.id || token.user?.name || "anon";
   const params = req.nextUrl.searchParams;
   const timeRange: TimeRange =
     (params.get("timeRange") as TimeRange) ?? "long_term";
-  const headersList = headers();
-  const accessToken = headersList.get("token")!;
-  const userId = headersList.get("user")!;
   const spotifyApi = new SpotifyWebApi({ accessToken });
 
   const _headers = (await limiter.check(5, userId)) as any;
@@ -44,7 +47,7 @@ export async function GET(req: NextRequest) {
       ${topSongs.join(",")}`,
       },
     ],
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
   });
 
   const response = NextResponse.json({

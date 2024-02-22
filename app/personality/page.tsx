@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Typewriter from "typewriter-effect";
 import PersonalityTraitsList from "./PersonalityTraitsList";
 import css from "./personality.module.css";
-import { TimeRange } from "../types";
+import { TimeRange } from "../types/types";
 
 const timeFrameOptions = [
   { value: "long_term", label: "Aller Zeiten" },
@@ -27,37 +27,31 @@ export default function About() {
   const [timeRange, setTimeRange] = useState<TimeRange>("long_term");
 
   useEffect(() => {
-    //@ts-ignore
     if (session?.data?.error === "RefreshAccessTokenError") {
       signIn("spotify");
     }
-    if (session.status === "authenticated") {
-      setIsFetching(true);
-      const queryParams = new URLSearchParams({ timeRange });
-      fetch(`/api/spotify?${queryParams.toString()}`, {
-        headers: {
-          //@ts-ignore
-          token: session.data.accessToken,
-          user: session.data.user?.name || session.data.user?.email || "anon",
-        },
+  }, [session]);
+
+  useEffect(() => {
+    setIsFetching(true);
+    const queryParams = new URLSearchParams({ timeRange });
+    fetch(`/api/spotify?${queryParams.toString()}`)
+      .then((res) => {
+        setIsFetching(false);
+        if (!res.ok) {
+          setError("Da lief wohl etwas Schief");
+          setHasFetchedUserPersonality(false);
+          return "";
+        }
+        return res.json();
       })
-        .then((res) => {
-          setIsFetching(false);
-          if (!res.ok) {
-            setError("Da lief wohl etwas Schief");
-            setHasFetchedUserPersonality(false);
-            return "";
-          }
-          return res.json();
-        })
-        .then((json) => {
-          if (!json) return;
-          const { personality } = json;
-          setUserPersonality(personality.split("-").filter(Boolean));
-          setHasFetchedUserPersonality(true);
-        });
-    }
-  }, [session, timeRange]);
+      .then((json) => {
+        if (!json) return;
+        const { personality } = json;
+        setUserPersonality(personality.split("-").filter(Boolean));
+        setHasFetchedUserPersonality(true);
+      });
+  }, [timeRange]);
 
   // TODO playlistenoptimierung (siehe chat in stream)
   const showTraitsList = typeWriterDone && hasFetchedUserPersonality;
